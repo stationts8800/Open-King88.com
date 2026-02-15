@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>รีวิวจากลูกค้า</title>
+<style>
+body{font-family:Arial;background:#111;color:#fff}
+.reviewBox{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+gap:15px;
+padding:20px;
+}
+.reviewCard{
+  background:#1a1a1a;
+  padding:15px;
+  border-radius:18px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.4);
+  transition:0.3s;
+}
+
+.reviewCard:hover{
+  transform:translateY(-5px);
+}
+
+.reviewCard img{
+  width:100%;
+  border-radius:14px;
+}
+
+.reviewTitle{
+  margin:10px 0 5px 0;
+  color:#ffcc00;
+  font-weight:bold;
+}
+
+.reviewText{
+  font-size:14px;
+  color:#ccc;
+}
+
+.reviewDate{
+  font-size:12px;
+  color:#888;
+  margin-top:6px;
+}
+.brandTitle{
+  text-align:center;
+  font-size:34px;
+  font-weight:900;
+  letter-spacing:3px;
+  margin-top:40px;
+  margin-bottom:5px;
+  background:linear-gradient(90deg,#ffcc00,#ffaa00,#ffcc00);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 25px rgba(255,204,0,0.35);
+}
+
+.subTitle{
+  display:block;
+  font-size:15px;
+  letter-spacing:3px;
+  margin-top:12px;
+  font-weight:600;
+
+  background: linear-gradient(90deg,#ffcc00,#ffaa00,#ffcc00);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+
+  text-shadow:0 0 15px rgba(255,170,0,0.5);
+}
+.registerBtn{
+  display:block;
+  width:220px;
+  margin:20px auto 40px auto;
+  padding:14px;
+  text-align:center;
+  font-weight:bold;
+  font-size:16px;
+  border-radius:30px;
+  text-decoration:none;
+
+  background:linear-gradient(90deg,#ffcc00,#ffaa00);
+  color:#000;
+
+  box-shadow:0 0 20px rgba(255,170,0,0.6);
+  transition:0.3s;
+}
+
+.registerBtn:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 30px rgba(255,170,0,0.9);
+}
+</style>
+</head>
+<body>
+
+<h2 class="brandTitle">
+  O-Pen King
+  <span class="subTitle">เสียงตอบรับจากลูกค้าจริง • การันตีคุณภาพ</span>
+</h2>
+
+<div class="reviewBox" id="reviewBox"></div>
+
+<a href="https://stationts8800.github.io/O-penKing.com/?register=true" class="registerBtn">
+สมัครสมาชิกตอนนี้
+</a>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyD_PEsWuy3Ad7Wfl6V1KmLYUxX_V5MDxto",
+  authDomain: "openking-shop.firebaseapp.com",
+  databaseURL: "https://openking-shop-default-rtdb.firebaseio.com",
+  projectId: "openking-shop",
+  storageBucket: "openking-shop.appspot.com",
+  messagingSenderId: "408359377995",
+  appId: "1:408359377995:web:32f3c2b29a06fa01abc1ce"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const box = document.getElementById("reviewBox");
+
+db.ref("reviews")
+  .orderByChild("time")
+  .on("value", snapshot=>{
+
+  box.innerHTML = "";
+
+  let data = [];
+
+  snapshot.forEach(child=>{
+    data.push(child.val());
+  });
+
+ data.reverse().forEach(r=>{
+
+  let dateText = "";
+  if(r.time){
+    let d = new Date(r.time);
+    dateText = d.toLocaleDateString("th-TH");
+  }
+
+  box.innerHTML += `
+  <div class="reviewCard">
+
+    <img src="${r.img}">
+
+    <h4 class="reviewTitle">
+      ${r.product || ""}
+    </h4>
+
+    <p class="reviewText">
+      ${r.text || ""}
+    </p>
+
+    <p class="reviewDate">
+      📅 ${dateText}
+    </p>
+
+  </div>
+  `;
+
+});
+});
+</script>
+
+</body>
+</html>
